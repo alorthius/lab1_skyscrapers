@@ -92,6 +92,38 @@ def check_uniqueness_in_rows(board: list) -> bool:
     return True
 
 
+def check_by_left_hint(row: str, left_hint: int) -> int:
+    highest_building = row[0]
+    building_number = 1
+    visible_buildings = 1
+
+    while building_number != len(row):
+        current_building = row[building_number]
+        building_number += 1
+
+        if current_building > highest_building:
+            highest_building = current_building
+            visible_buildings += 1
+
+    return visible_buildings
+
+
+def check_by_right_hint(row: str, right_hint: int) -> int:
+    highest_building = row[-1]
+    building_number = len(row)
+    visible_buildings = 1
+
+    while building_number != 0:
+        current_building = row[building_number - 1]
+        building_number -= 1
+
+        if current_building > highest_building:
+            highest_building = current_building
+            visible_buildings += 1
+    
+    return visible_buildings
+
+
 def check_horizontal_visibility(board: list) -> bool:
     """
     Check row-wise visibility (left-right and vice versa)
@@ -120,40 +152,19 @@ def check_horizontal_visibility(board: list) -> bool:
 
         row = row[1:-1]
 
-        if left_hint and not right_hint:
-            highest_building = row[0]
-            building_number = 1
-            visible_buildings = 1
+        if left_hint:
+            visible_buildings = check_by_left_hint(row, left_hint)
 
-            while building_number != len(row):
-                current_building = row[building_number]
-                building_number += 1
-
-                if current_building > highest_building:
-                    highest_building = current_building
-                    visible_buildings += 1
-                
             if visible_buildings != left_hint:
                 return False
-        
 
-        elif right_hint and not left_hint:
-            highest_building = row[-1]
-            building_number = len(row)
-            visible_buildings = 1
+        if right_hint:
+            visible_buildings = check_by_right_hint(row, right_hint)
 
-            while building_number != 0:
-                current_building = row[building_number - 1]
-                building_number -= 1
-
-                if current_building > highest_building:
-                    highest_building = current_building
-                    visible_buildings += 1
-            
             if visible_buildings != right_hint:
                 return False
 
-    return True            
+    return True
 
 
 def check_columns(board: list) -> bool:
