@@ -1,6 +1,8 @@
 """
 GitHub link: https://github.com/alorthius/lab1_skyscrapers
 """
+
+
 def read_input(path: str) -> list:
     """
     Read game board file from path.
@@ -37,9 +39,7 @@ def left_to_right_check(input_line: str, pivot: int) -> bool:
     board = input_line[1:]
     highest_building = board[0]
     building_number = 1
-
-    if pivot == 1: # the first building is always visible
-        return True
+    visible_buildings = 1
 
     while building_number != len(board):
         current_building = board[building_number]
@@ -47,10 +47,12 @@ def left_to_right_check(input_line: str, pivot: int) -> bool:
 
         if current_building > highest_building:
             highest_building = current_building
-            if building_number == pivot:
-                return True
+            visible_buildings += 1
 
-    return False
+    if visible_buildings != pivot:
+        return False
+
+    return True
 
 
 def check_not_finished_board(board: list) -> bool:
@@ -99,6 +101,9 @@ def check_uniqueness_in_rows(board: list) -> bool:
         return None
 
     for row in board:
+        if row.startswith('*') and row.endswith('*'):
+            continue
+
         row = row[1:-1]
         row = row.replace('*', '')
 
@@ -248,7 +253,7 @@ def check_skyscrapers(input_path: str) -> bool:
         return None
 
     board = read_input(input_path)
-    if (not check_uniqueness_in_rows(board) or not check_horizontal_visibility(board)\
-        or not check_columns(board)):
+    if (not check_uniqueness_in_rows(board) or not check_horizontal_visibility(board)
+            or not check_columns(board)):
         return False
     return True
